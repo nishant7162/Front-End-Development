@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 700px;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <script>
+       
+        var calculatorContainer = document.createElement('div');
+        calculatorContainer.id = 'calculator-container';
+        calculatorContainer.style.border = '1px solid #ccc';
+        calculatorContainer.style.borderRadius = '10px';
+        calculatorContainer.style.padding = '30px';
+        calculatorContainer.style.boxShadow = '  0 10px rgba(0, 0, 0, 0.1)';
+        calculatorContainer.style.backgroundColor = '#fff';
+        document.body.appendChild(calculatorContainer);
+
+
+        var inputField = document.createElement('input');
+        inputField.id = 'result';
+        inputField.type = 'text';
+        inputField.readOnly = true;
+        inputField.style.width = '191px';
+        inputField.style.fontSize = '28px';
+        inputField.style.height="38px"
+        calculatorContainer.appendChild(inputField);
+
+     
+        var buttonLayout = [
+            ['1', '2', '3', '+'],
+            ['4', '5', '6', '-'],
+            ['7', '8', '9', '*'],
+            ['0', '.', '=', '/'],
+            ['C', 'Del']
+        ];
+
+        buttonLayout.forEach(row => {
+            var div = document.createElement('div');
+            div.style.display = 'flex';
+
+            row.forEach(value => {
+                var button = document.createElement('button');
+                button.textContent = value;
+                button.style.width = '40px';
+                button.style.height = '49px';
+                button.style.fontSize = '16px';
+                button.style.margin = '5px';
+
+                button.addEventListener('click', function() {
+                    buttonClick(value);
+                });
+
+                div.appendChild(button);
+            });
+
+            calculatorContainer.appendChild(div);
+        });
+
+        function buttonClick(value) {
+            if (value === '=') {
+                calculate();
+            } else if (value === 'C') {
+                clearInput();
+            } else if (value === 'Del') {
+                deleteLast();
+            } else {
+                appendValue(value);
+            }
+        }
+        
+        function calculate() {
+            
+                var result = evaluateExpression(inputField.value);
+                inputField.value = result;
+
+        }
+
+        function evaluateExpression(expression) {
+            return Function('"use strict";return (' + expression + ')')();
+        }
+
+        function appendValue(value) {
+            try{
+            inputField.value += value;
+            }catch{
+                
+            }
+        }
+
+        function clearInput() {
+            inputField.value = '';
+        }
+
+        function deleteLast() {
+            var currentValue = inputField.value;
+            inputField.value = currentValue.substring(0, currentValue.length - 1);
+        }
+
+        document.addEventListener('keydown', function(event) {
+            const key = event.key;
+            if (key.match(/[0-9+\-*/.=]|Enter|/)) {
+                event.preventDefault();
+                if (key === 'Enter') {
+                    calculate();
+                } else if (key === 'Backspace' || key === 'Delete') {
+                    deleteLast();
+                } else {
+                    appendValue(key);
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
